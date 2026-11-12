@@ -1,19 +1,19 @@
-// Получаем элемент иконки
-const themeIcon = document.getElementById('theme-icon');
+(() => {
+    const button = document.getElementById('theme-icon');
+    try {
+        if (localStorage.getItem('sirius-theme') === 'light') document.body.classList.add('light-mode');
+    } catch (_) { /* Local storage may be unavailable. */ }
 
-// Установка начальной темы
-let isDarkMode = true;
-
-// Функция переключения темы
-themeIcon.addEventListener('click', () => {
-    if (isDarkMode) {
-        document.body.classList.remove('dark-mode');
-        document.body.classList.add('light-mode');
-        themeIcon.src = "https://cdn-icons-png.flaticon.com/512/869/869853.png"; // Иконка луны для светлой темы
-    } else {
-        document.body.classList.remove('light-mode');
-        document.body.classList.add('dark-mode');
-        themeIcon.src = "https://cdn-icons-png.flaticon.com/512/869/869869.png"; // Иконка солнца для тёмной темы
+    function update() {
+        const light = document.body.classList.contains('light-mode');
+        button.textContent = light ? 'Увімкнути темну тему' : 'Увімкнути світлу тему';
+        button.setAttribute('aria-pressed', String(light));
     }
-    isDarkMode = !isDarkMode; // Переключаем состояние
-});
+    button.addEventListener('click', () => {
+        const light = document.body.classList.toggle('light-mode');
+        try { localStorage.setItem('sirius-theme', light ? 'light' : 'dark'); }
+        catch (_) { /* Not persistent in private mode. */ }
+        update();
+    });
+    update();
+})();
