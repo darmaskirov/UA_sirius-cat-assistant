@@ -1,5 +1,5 @@
 // Конфігурація
-const version = "v1.3.2";
+const version = "v1.4.0";
 const siteTitle = "SiriusCat";
 const faviconURL = "./css/favicons/favicon-1.png";
 const favicon = document.createElement('link');
