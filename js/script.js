@@ -1,144 +1,70 @@
-// Скрипт для взаимодействия с котом
-const body = document.body;
-const catContainer = document.getElementById('cat-container');
-const eyes = document.querySelectorAll('.eye');
-const pupils = document.querySelectorAll('.pupil');
-const talkButton = document.getElementById('talk-button');
-const animationButton = document.getElementById('animation-button');
-const bgButtons = document.querySelectorAll('.bg-button');
-const styleButtons = document.querySelectorAll('.style-buttons-container .action-button');
-// Получаем элементы лапки и кнопки
-const paw = document.getElementById("paw");
-const showPawButton = document.getElementById("showPawButton");
+// SiriusCat interactions: one small public API.
+(() => {
+    const container = document.getElementById('cat-container');
+    const cat = container.querySelector('.cat');
+    const bubble = container.querySelector('.speech-bubble');
+    const paw = document.getElementById('paw');
+    const pupils = container.querySelectorAll('.pupil');
+    const timers = {};
 
-const saySomethingButton = document.getElementById('say-something-button');
-const speechBubble = document.querySelector('.speech-bubble');
-
-// Добавляем обработчик события на кнопку
-showPawButton.addEventListener("click", () => {
-    // Показываем лапку
-    paw.style.display = "block";
-
-    // Устанавливаем таймер на 10 секунд для скрытия лапки
-    setTimeout(() => {
-        paw.style.display = "none";
-    }, 3000); // 10000 миллисекунд = 10 секунд
-});
-
-styleButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const styleClass = button.getAttribute('data-style');
-        document.body.className = styleClass; // Устанавливаем стиль для body
-    });
-});
-
-
-// Функция для запуска разговора
-function startTalking() {
-    catContainer.classList.add('talking');
-    setTimeout(() => {
-        catContainer.classList.remove('talking'); // Останавливаем анимацию через 10 секунд
-    }, 20000); // Продолжительность 10 секунд
-}
-
-// Привязываем функцию к кнопке "Разговаривать"
-document.getElementById('talk-button').addEventListener('click', startTalking);
-
-function showSpeechBubble() {
-    speechBubble.style.display = 'block';
-    setTimeout(() => {
-        speechBubble.style.display = 'none';
-    }, 2000); // Убираем через 2 секунды
-}
-
-catContainer.addEventListener('click', showSpeechBubble);
-
-// Обработка клика по кнопке
-bgButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const gradientClass = button.getAttribute('data-bg'); // Получаем имя градиента
-        body.className = gradientClass; // Устанавливаем соответствующий класс на body
-    });
-});
-
-// Обработка клика для смены состояния рта
-catContainer.addEventListener('click', () => {
-    catContainer.classList.toggle('active'); // Переключаем между закрытым и улыбающимся состоянием
-});
-
-
-// Обработка движения зрачков
-document.addEventListener('mousemove', (event) => {
-    const rect = catContainer.getBoundingClientRect();
-    const eyeCenterX = rect.width / 2;
-    const eyeCenterY = rect.height / 2;
-
-    // Получаем координаты курсора
-    const offsetX = Math.min(Math.max(event.clientX - rect.left - eyeCenterX, -10), 10);
-    const offsetY = Math.min(Math.max(event.clientY - rect.top - eyeCenterY, -10), 10);
-
-    // Применяем смещение к зрачкам
-    pupils.forEach(pupil => {
-        pupil.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`;
-    });
-});
-
-// Обработка мобильных устройств (замена движения глаз анимацией)
-if ('ontouchstart' in window) {
-    pupils.forEach(pupil => {
-        pupil.style.animation = 'pupilMove 3s infinite';
-    });
-}
-
-// Анимация появления речи
-catContainer.addEventListener('click', () => {
-    catContainer.classList.toggle('active');
-    setTimeout(() => {
-        catContainer.classList.remove('active');
-    }, 2000);
-});
-
-
-// Обработка кнопки "Говорити"
-const button = document.querySelector('button');
-button.addEventListener('click', () => {
-    catContainer.classList.add('active');
-    setTimeout(() => {
-        catContainer.classList.remove('active');
-    }, 2000);
-});
-
-// Активация разговора
-talkButton.addEventListener('click', () => {
-    const speechBubble = document.querySelector('.speech-bubble');
-    speechBubble.style.display = 'block';
-    setTimeout(() => {
-        speechBubble.style.display = 'none';
-    }, 2000); // Убираем пузырь через 2 секунды
-});
-
-// Активация второй анимации
-animationButton.addEventListener('click', () => {
-    const cat = document.querySelector('.cat');
-    cat.classList.add('second-animation');
-    setTimeout(() => {
+    function schedule(name, callback, duration) {
+        clearTimeout(timers[name]);
+        timers[name] = setTimeout(callback, duration);
+    }
+    function say(message = 'Мяу!', duration = 3500) {
+        bubble.textContent = message;
+        bubble.style.display = 'block';
+        schedule('speech', () => { bubble.style.display = 'none'; }, duration);
+    }
+    function interact() {
+        container.classList.add('active');
+        say('Мяу!');
+        schedule('active', () => container.classList.remove('active'), 1800);
+    }
+    function wave() {
+        paw.style.display = 'block';
+        paw.classList.remove('wave-once');
+        void paw.offsetWidth;
+        paw.classList.add('wave-once');
+        schedule('paw', () => {
+            paw.style.display = 'none';
+            paw.classList.remove('wave-once');
+        }, 2200);
+    }
+    function talk() {
+        container.classList.add('talking');
+        cat.classList.add('talking');
+        say('Мяу! Я тебе слухаю.', 3000);
+        schedule('talking', () => {
+            container.classList.remove('talking');
+            cat.classList.remove('talking');
+        }, 3000);
+    }
+    function animate() {
         cat.classList.remove('second-animation');
-    }, 2000); // Сбрасываем анимацию через 2 секунды
-});
+        void cat.offsetWidth;
+        cat.classList.add('second-animation');
+        schedule('animation', () => cat.classList.remove('second-animation'), 2000);
+    }
+    container.addEventListener('click', interact);
+    container.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            interact();
+        }
+    });
+    document.getElementById('talk-button').addEventListener('click', talk);
+    document.getElementById('animation-button').addEventListener('click', animate);
+    document.getElementById('showPawButton').addEventListener('click', wave);
 
-// Функция для активации анимации рта с боковым сужением
-function startDynamicTalkingAnimation() {
-    const cat = document.querySelector('.cat');
-    cat.classList.add('talking');
-
-    // Удаляем класс "talking" через 3 секунды, чтобы остановить анимацию
-    setTimeout(() => {
-        cat.classList.remove('talking');
-    }, 3000);
-}
-
-// Привязываем функцию к кнопке "Разговаривать"
-document.getElementById('talk-button').addEventListener('click', startDynamicTalkingAnimation);
-
-
-
+    document.addEventListener('pointermove', (event) => {
+        if (event.pointerType === 'touch') return;
+        const rect = container.getBoundingClientRect();
+        const x = Math.max(-10, Math.min(10, event.clientX - rect.left - rect.width / 2));
+        const y = Math.max(-10, Math.min(10, event.clientY - rect.top - rect.height / 2));
+        pupils.forEach((pupil) => {
+            pupil.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px))';
+        });
+    });
+    window.Sirius = Object.freeze({ say, interact, wave, talk, animate });
+})();
