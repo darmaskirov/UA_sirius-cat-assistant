@@ -1,11 +1,7 @@
-  // Отримуємо посилання на повзунок та контейнер
-  const scaleSlider = document.getElementById('scaleSlider');
-  const catContainer = document.querySelector('.cat-container');
-
-  // Додаємо обробник події 'input'
-  scaleSlider.addEventListener('input', () => {
-    // Зчитуємо поточне значення з повзунка
-    const scaleValue = scaleSlider.value;
-    // Змінюємо CSS-трансформацію контейнера кота
-    catContainer.style.transform = `scale(${scaleValue})`;
-  });
+(() => {
+    const slider = document.getElementById('scaleSlider');
+    const cat = document.getElementById('cat-container');
+    const update = () => { cat.style.transform = 'scale(' + slider.value + ')'; };
+    slider.addEventListener('input', update);
+    update();
+})();

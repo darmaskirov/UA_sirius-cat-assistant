@@ -1,41 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SiriusCat</title>
+    <title>SiriusCat — інтерактивний котик</title>
+    <meta name="description" content="SiriusCat — інтерактивний котик із анімаціями, звуками та голосовими командами.">
     <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/skin_cats.css">
     <link rel="stylesheet" href="css/loading.css">
-    <link rel="stylesheet" href="css/modal_window.css">
     <link rel="stylesheet" href="css/navbarButtons.css">
     <link rel="stylesheet" href="css/clock.css">
+    <link rel="stylesheet" href="css/cat/cat.css">
+    <link rel="stylesheet" href="css/cat/animations.css">
+    <link rel="stylesheet" href="css/cat/brows.css">
+    <link rel="stylesheet" href="css/cat/eyes.css">
+    <link rel="stylesheet" href="css/cat/mouth.css">
+    <link rel="stylesheet" href="css/cat/nose.css">
+    <link rel="stylesheet" href="css/cat/paw.css">
+    <link rel="stylesheet" href="css/cat/speech-bubble.css">
+    <link rel="stylesheet" href="css/cat/whiskers.css">
+    <link rel="stylesheet" href="css/cat/skin_cats.css">
 </head>
 <body>
     <nav>
-            <button id="closeAdm" class="action-button">ADM</button>
-            <button id="closeAdm" class="action-button">Керування домом 🏠</button>
+            <button id="closeAdm" class="action-button" aria-controls="admin-panel" aria-expanded="true">ADM</button>
+            <button id="home-control-button" class="action-button" disabled title="Функція ще не реалізована">Керування домом 🏠 (скоро)</button>
     </nav>
-    <!-- <div id="loading-screen">
-        <div class="loading-content">
-            <div class="loading-text">Завантаження...</div>
-            <div class="loading-percentage" id="percentage">0%</div>
-        </div>
-    </div> -->
-    <!-- Контейнер кота -->
-    <div class="cat-container" id="cat-container">
-        <!-- Вуха кота -->
+    
+    
+    <div class="cat-container" id="cat-container" role="button" tabindex="0" aria-label="Погладити Сіріуса">
+        
         <div class="ears-container">
             <div class="ear left"></div>
             <div class="ear right"></div>
         </div>
-        <!-- Голова кота -->
+        
         <div class="cat">
-            <!-- Вуса кота -->
+            
             <div class="whiskers">
                 <div class="left"></div>
                 <div class="left"></div>
@@ -44,43 +47,44 @@
                 <div class="right"></div>
                 <div class="right"></div>
             </div>
-            <!-- Брови кота -->
+            
             <div class="brows">
                 <div class="left"></div>
                 <div class="right"></div>
             </div>
-            <!-- Очі кота -->
+            
             <div class="eye left">
                 <div class="pupil"></div>
             </div>
             <div class="eye right">
                 <div class="pupil"></div>
             </div>
-            <!-- Ніс кота -->
+            
             <div class="nose"></div>
-            <!-- Рот кота -->
+            
             <div class="mouth">
                 <div class="tongue"></div>
             </div>
         </div>
 
-        <!-- Лапка кота -->
+        
         <div class="paw" id="paw" style="display: none;">
             <div class="toe toe-1"></div>
             <div class="toe toe-2"></div>
             <div class="toe toe-3"></div>
             <div class="pad"></div>
         </div>
-        <!-- Речовий блок -->
-        <div class="speech-bubble">Мяу!</div>
+        
+        <div class="speech-bubble" role="status" aria-live="polite">Мяу!</div>
     </div>
 
-    <!-- Блок з кнопками -->
-    <div class="all-buttons-container">
+    
+    <div class="all-buttons-container" id="admin-panel">
         <h1>Адмін панель</h1>
-        <!-- <span id="site-version"><script>`Версія: ${version}`</script></span> -->
+        <span id="site-version" class="version-label"></span>
+        
         <div class="buttons-container">
-            <!-- Повзунок для масштабу -->
+            
             <label for="scaleSlider">Змінити масштаб кота:</label>
             <input 
             type="range" 
@@ -90,15 +94,16 @@
             step="0.1" 
             value="1"
             />
-            <!-- Кнопка зміни теми -->
+            
 
                 <button id="theme-icon" class="action-button">Змінити тему</button>
 
-            <!-- Інші кнопки -->
+            
             <button id="talk-button" class="action-button">Розмовляти</button>
             <button id="animation-button" class="action-button">Анімація</button>
             <button id="say-something-button" class="action-button">Сказати що небудь</button>
             <button id="showPawButton" class="action-button">Помахати лапкою</button>
+            <button id="voice-button" class="action-button" aria-pressed="false">🎙 Голосові команди</button>
             <button id="toggle-navbar-button" class="action-button">Прибрати Navbar</button>
             <button id="playButton-1" class="action-button">Помурчи 😺</button>
             <button id="playButton" class="action-button">Мяукни 😺</button>
@@ -113,14 +118,14 @@
             <audio id="Notification-2" src="sounds/notification_3.mp3"></audio>
             <audio id="Notification-3" src="sounds/notification_4.mp3"></audio>
         </div>
+        <p id="voice-status" aria-live="polite">Скажи: «привіт», «мяу», «помахай лапкою» або «зміни тему».</p>
     </div>
     <footer id="footer">
-        <!-- <span id="site-version"><script>`Версія: ${version}`</script></span> -->
+        
         <div id="clock"></div>
     </footer>
     <script src="js/script.js"></script>
-    <script src="js/catStyles.js"></script>
-    <!-- <script src="js/LoadScreen.js"></script> -->
+    
     <script src="js/catPhrases.js"></script>
     <script src="js/changeTheme.js"></script>
     <script src="js/ToggleNavbar.js"></script>
@@ -129,5 +134,6 @@
     <script src="js/version.js"></script>
     <script src="js/toggleAdminPanel.js"></script>
     <script src="js/seeClock.js"></script>
+    <script src="js/voiceCommands.js"></script>
 </body>
 </html>
